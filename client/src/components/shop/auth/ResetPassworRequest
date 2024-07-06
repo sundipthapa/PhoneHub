@@ -1,0 +1,48 @@
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import { requestNewPassword } from './fetchApi';
+
+const ResetPasswordRequestPage = () => {
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await requestNewPassword({ email });
+      setMessage(res.message);
+      setEmail('');
+    } catch (error) {
+      toast.error(error?.data?.message || error.error);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-semibold mb-4">Request New Password</h1>
+      {message && <div className="bg-green-100 text-green-700 p-2 rounded mb-4">{message}</div>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex flex-col">
+          <label htmlFor="email" className="text-lg font-medium">Email address</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <button
+          type="submit"
+          className={`w-full bg-yellow-500 text-white py-2 rounded-md font-medium hover:bg-yellow-600}`}
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default ResetPasswordRequestPage;
